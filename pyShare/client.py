@@ -60,8 +60,9 @@ from kivy.animation import Animation
 # a large label to display all the messages received from
 # the server
 class TwistedClientApp(App):
-	connection = None
-	user_os = None
+	''' '''
+        connection = None
+ 	user_os = None
 	user = None
 	labelmsg = ""
 	chat_online_details = ""
@@ -70,12 +71,13 @@ class TwistedClientApp(App):
 	notify_events = []
 	available_users = []
 	def build(self):
-		root = self.pro_info()
-        #self.connect_to_server()
+		root = self.initialise_setup()
 		self.start_thread()
 		return root
-	def pro_info(self):
-		self.layout = FloatLayout(size=(800,800))
+	def initialise_setup(self):
+                '''variable initialisation'''
+		
+                self.layout = FloatLayout(size=(800,800))
 		self.Mainlabel = Label(text="SharePy",color=(0.6,0.7,0.2,1),font_size="65sp",pos=(280,450),size_hint=(.3,.3))
 		self.layout.add_widget(self.Mainlabel)
 		self.cont_but = Button(text="Cont...",background_color=(0.2,0.3,0.88,1),pos=(700,30),size_hint=(.12,.1))
@@ -98,7 +100,10 @@ class TwistedClientApp(App):
 		self.cont_but.bind(on_press=self.setup_gui)
 		
 		return self.layout
+
 	def setup_gui(self,object):
+                ''' The layout for the app goes here '''
+
 		global user 
 		user = getpass.getuser()
 		global user_os 
@@ -138,15 +143,17 @@ class TwistedClientApp(App):
 		self.cancel_event = Button(text="Close",size_hint=(0.27,0.06),pos=(600,0),background_color=(255,0,0,0.6))
 		self.cancel_chat = Button(text="Close",size_hint=(0.27,0.06),pos=(600,0),background_color=(255,0,0,0.6))
 		self.repolabel = Label(text="Create your own Repository/New Folder by providing the name below",pos=(210,320),size_hint=(0.5,0.5),color=(0.6,0.3,0.1,1),font_size="20dp")
-		#self.layout = FloatLayout(size=(800,800))
+		
 		
 		self.update = Button(text="Update",background_color=(0.3,0.3,0.9,1),size_hint=(.25,.1),pos=(600,550))
 		
-		self.setup_load()
+		self.fetching_server()
 		
 		
 		return self.layout
-	def setup_load(self):
+
+	def fetching_server(self):
+                ''' Start server on desired port'''
 		
 		self.layout.clear_widgets()
 		self.layout.add_widget(self.button)
@@ -169,68 +176,75 @@ class TwistedClientApp(App):
 		self.anim_startbut = Animation(x=0,y=100, opacity=0.4, d=0.5,t ='in_quad') +\
 			Animation(x=50,y=100, opacity=1, d=0.6)
 		self.anim_startbut.start(self.button)
-	def setup_utilities(self):
+
+	def repo_creation(self):
+                '''  creation of repo to work in'''
+
 		self.layout.clear_widgets()
-		#self.repolabel = Label(text="Create your own Repository/New Folder by providing the name below",pos=(200,500))
-		#self.repolabel.text = "Create your own Repository/New Folder by providing the name below"
 		self.layout.add_widget(self.repolabel)
 		self.layout.add_widget(self.reponame)
-		self.reponame.bind(on_text_validate=self.start_utilities)
+		self.reponame.bind(on_text_validate=self.building_utilities)
 		return self.layout
-	def start_utilities(self, *args):
-			root_dirname = self.reponame.text
-			if not os.path.exists(root_dirname):
-				os.makedirs(root_dirname)
-				#output = subprocess.Popen(["git","init"],shell=True,stdout=subprocess.PIPE).communicate()[0]
-			os.chdir(root_dirname)
-			self.dir_loc.text = os.getcwd()
-			self.layout.clear_widgets()
-			self.layout.add_widget(self.button3)
-			self.layout.add_widget(self.button4)
-			self.layout.add_widget(self.closeclient)
-			self.layout.add_widget(self.notify_but)
-			self.layout.add_widget(self.chatbox)
-			self.layout.add_widget(self.label)
-			self.layout.add_widget(self.dir_loc)
-			self.layout.add_widget(self.label_info)
+
+	def building_utilities(self, *args):
+                ''' providing the services to the client'''
+
+                root_dirname = self.reponame.text
+                if not os.path.exists(root_dirname):
+                    os.makedirs(root_dirname)
+                os.chdir(root_dirname)
+                self.dir_loc.text = os.getcwd()
+                self.layout.clear_widgets()
+                self.layout.add_widget(self.button3)
+                self.layout.add_widget(self.button4)
+                self.layout.add_widget(self.closeclient)
+                self.layout.add_widget(self.notify_but)
+                self.layout.add_widget(self.chatbox)
+                self.layout.add_widget(self.label)
+                self.layout.add_widget(self.dir_loc)
+                self.layout.add_widget(self.label_info)
 			
-			self.anim_host = Animation(x=20,y=520, opacity=0.4, d=0.5,t ='in_quad') +\
-				Animation(x=20,y=480, opacity=1, d=0.6)
-			self.anim_host.start(self.button3)
+                self.anim_host = Animation(x=20,y=520, opacity=0.4, d=0.5,t ='in_quad') +\
+                        Animation(x=20,y=480, opacity=1, d=0.6)
+                self.anim_host.start(self.button3)
 		
-			self.anim_port = Animation(x=155,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
-				Animation(x=155,y=480, opacity=1, d=0.6)
-			self.anim_port.start(self.button4)
+                self.anim_port = Animation(x=155,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
+                        Animation(x=155,y=480, opacity=1, d=0.6)
+                self.anim_port.start(self.button4)
 		
-			self.anim_button = Animation(x=290,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
-				Animation(x=290,y=480, opacity=1, d=0.6)
-			self.anim_button.start(self.notify_but)
+                self.anim_button = Animation(x=290,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
+                        Animation(x=290,y=480, opacity=1, d=0.6)
+                self.anim_button.start(self.notify_but)
 			
-			self.anim_close = Animation(x=425,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
-				Animation(x=425,y=480, opacity=1, d=0.6)
-			self.anim_close.start(self.closeclient)
+                self.anim_close = Animation(x=425,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
+                        Animation(x=425,y=480, opacity=1, d=0.6)
+                self.anim_close.start(self.closeclient)
 			
-			self.anim_chat = Animation(x=563,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
-				Animation(x=563,y=480, opacity=1, d=0.6)
-			self.anim_chat.start(self.chatbox)
+                self.anim_chat = Animation(x=563,y=520, opacity=0.1, d=0.5,t ='in_quad') +\
+                        Animation(x=563,y=480, opacity=1, d=0.6)
+                self.anim_chat.start(self.chatbox)
 			
-			return self.layout
+                return self.layout
+
 	def connect_to_server(self,*args):
-	
+	        ''' connection establishing (handshaking)'''
 		if((self.ctextport.text).isdigit()):
 			self.conn = reactor.connectTCP(str(self.ctexthost.text), int(self.ctextport.text), EchoFactory(self))
-			#client_info = "0$#" + 
-			#self.connection.write()
+			
 			self.label.text = "Connecting...\n"
 		else:
 			
 			self.label.text  = "Not Connected...\nPlease enter valid port" 	
+
 	def on_connection(self, connection):
+                ''' on successful establishment with server'''
+
 		self.print_message("Connected Succesfully!")
 		self.connection = connection
-		self.setup_utilities()
+		self.repo_creation()
 
 	def send_message(self,connection):
+                ''' client demands resources '''
 		msg = self.textbox.text
 		if msg and self.connection:
 			msg = "2$#" + user + "@" + user_os + ": " + msg
@@ -238,9 +252,9 @@ class TwistedClientApp(App):
 			self.textbox.text = ""
 
 	def print_message(self, msg):
+                ''' the processed output client gets on demanding resources '''
 		copr = msg.split("$#")[0]
 		
-		#print msg
 		if copr.isdigit():
 			if (int(copr)==2):
 				self.label.text = msg.split("$#")[1] + "\n"
@@ -264,8 +278,7 @@ class TwistedClientApp(App):
 					f = g.split("src_path=")[1]
 					f1 = f.split(">")[0]
 					msg = "A file at\n" + f1 + "\n is " + o
-				#self.popup = Popup(title='Notification      Click outside to exit',content=Label(text=str(msg)),size_hint=(.8, .4))
-				#self.popup.open()
+				
 				self.layout.remove_widget(self.label_info)
 				self.layout.add_widget(self.label_info)
 				self.label_info.text = str(msg)
@@ -275,15 +288,15 @@ class TwistedClientApp(App):
 					Animation(x=0,y=650, opacity=0, d=2)
 				self.anim.start(self.label_info)
 				self.notify_events.append(str(msg))
-				#call function recent_act
+				
 			elif (int(copr)==5):
 				msg = msg.split("$#")[1]
-				#self.available_users.append(str(msg))
+				
 				msg = msg.split(',')
 				self.chat_ground.text = " "
 				self.haha =  [0]*30
 				self.y = 0
-				#print len(msg)
+				
 				for on in range (0,len(msg)-1):
 					self.haha[on] = Button(text=str(msg[on]),background_color=(0,1,0,1),pos=(600,515-self.y),size_hint=(0.25,0.07))
 					self.layout.add_widget(self.haha[on])
@@ -293,24 +306,31 @@ class TwistedClientApp(App):
 			return self.layout	
 		else:
 			self.label.text = msg + "\n"
+
 	def opentextinput(self, *args):
+                ''' for sending a message to server or searching for '''
+
 		self.textbox = TextInput(size_hint=(.9,.1),pos=(0,0), multiline=False,focus=True)
 		self.textbox.bind(on_text_validate=self.send_message)	
 		self.closebutton = Button(text="Close",size_hint=(.1,.1),pos=(720,0),background_color=(255,0,0,1))
-		self.closebutton.bind(on_press=self.destroy)
+		self.closebutton.bind(on_press=self.close_input_editor)
 		self.layout.add_widget(self.textbox)
 		self.layout.add_widget(self.closebutton)
 	
 		
-	def destroy(self, *args):
+	def close_input_editor(self, *args):
+                '''  closing the requester -- textbox '''
+
 		self.layout.remove_widget(self.closebutton)
 		self.layout.remove_widget(self.textbox)
 
 	def CloseClient(self, *args):
+                ''' client wants to disconnect with the server '''
+
 		self.conn.disconnect()
 		self.layout.clear_widgets()
 		#os.chdir(cd..)
-		self.setup_load()
+		self.repo_creation()
 		path = os.path.dirname(os.getcwd())
 		os.chdir(path)
 		#output = subprocess.Popen(["cd.."],stdout=subprocess.PIPE).communicate()[0]
@@ -318,6 +338,8 @@ class TwistedClientApp(App):
 		return self.layout
 		
 	def chathistory(self, *args):
+                ''' maintaining conversational history  '''
+
 		self.layout.remove_widget(self.chatbox)
 		self.layout.clear_widgets()
 		
@@ -329,7 +351,7 @@ class TwistedClientApp(App):
 		self.layout.add_widget(self.chat_ground)
 		self.backbutton = Button(text="Back <-",background_color=(1,0.1,0.1,1),size_hint=(.11,.1),pos=(30,500),font_size="20dp")
 		self.layout.add_widget(self.backbutton)
-		self.backbutton.bind(on_press=self.start_utilities)
+		self.backbutton.bind(on_press=self.building_utilities)
 		#self.layout.add_widget(self.cancel_chat)
 		#self.cancel_chat.bind(on_press=self.cancel_chat_box)
 		self.chat_online_details = "5$#" + user + "@" + user_os + ": " + "Ready to chat"
@@ -337,7 +359,9 @@ class TwistedClientApp(App):
 		self.connection.write(str(self.chat_online_details))
 		#return self.layout
 
-	def background_stuff(self):	
+	def stimulate_on_repo_changes(self):
+                '''  checking for any file events in the current repo '''
+	
 		while True:
 			#self.logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(message)s',datefmt='%Y-%m-%d %H:%M:%S')
 			self.path = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
@@ -353,7 +377,7 @@ class TwistedClientApp(App):
 				self.observer.join()
 
 	def start_thread(self):
-		t = Thread(target=self.background_stuff)
+		t = Thread(target=self.stimulate_on_repo_changes)
 		t.start()
 	
 	def notify(self,textevent):
@@ -406,6 +430,7 @@ class ChangeHandler(FileSystemEventHandler):
 	def __init__(self,obj):
 		self.obj = obj
 	def on_any_event(self,event):
+                ''' watch for file del, creation, modification, etc '''
 		if event.is_directory:
 			#print "A folder is added"
 			print "e=",event
@@ -422,6 +447,7 @@ class ChangeHandler(FileSystemEventHandler):
 		return os.path.splitext(filename)[-1].lower()
 
 class SendMessage(protocol.Protocol):
+        ''' client-to-client chat :) '''
 	def __init__(self,obj):
 		self.obj = obj
 		self.transport.write("8$#Client.py")
